@@ -62,7 +62,7 @@ type PipelineStoreInterface interface {
 	UpdatePipelineStatus(string, model.PipelineStatus) error
 	UpdatePipelineDefaultVersion(string, string) error
 
-	CreatePipelineVersion(*model.PipelineVersion, bool updatePipelineVersion) (*model.PipelineVersion, error)
+	CreatePipelineVersion(*model.PipelineVersion, bool) (*model.PipelineVersion, error)
 	GetPipelineVersion(versionId string) (*model.PipelineVersion, error)
 	GetPipelineVersionWithStatus(versionId string, status model.PipelineVersionStatus) (*model.PipelineVersion, error)
 	ListPipelineVersions(pipelineId string, opts *list.Options) ([]*model.PipelineVersion, int, string, error)
@@ -475,9 +475,6 @@ func (s *PipelineStore) CreatePipelineVersion(v *model.PipelineVersion, updatePi
 			"Failed to create query to insert version to pipeline version table: %v",
 			versionErr.Error())
 	}
-	// HERE HERE HERE
-	// HERE WE GO!!!!
-	// In a single transaction, insert new version and update default version.
 	tx, err := s.db.Begin()
 	if err != nil {
 		return nil, util.NewInternalServerError(
