@@ -115,7 +115,7 @@ func (s *ScheduledWorkflow) ParametersAsString() (string, error) {
 	for _, param := range params {
 		workflowParam := workflowapi.Parameter{
 			Name:  param.Name,
-			Value: &param.Value,
+			Value: workflowapi.Int64OrStringPtr(&param.Value),
 		}
 		workflowParams = append(workflowParams, workflowParam)
 	}

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -25,13 +26,13 @@ const (
 
 func WatchPods(namespaceToWatch string, clientManager ClientManagerInterface) {
 	k8sCore := clientManager.KubernetesCoreClient()
-
+	ctx := context.Background()
 	for {
 		listOptions := metav1.ListOptions{
 			Watch:         true,
 			LabelSelector: CacheIDLabelKey,
 		}
-		watcher, err := k8sCore.PodClient(namespaceToWatch).Watch(listOptions)
+		watcher, err := k8sCore.PodClient(namespaceToWatch).Watch(ctx, listOptions)
 
 		if err != nil {
 			log.Printf("Watcher error:" + err.Error())
@@ -102,6 +103,7 @@ func isCacheWriten(labels map[string]string) bool {
 }
 
 func patchCacheID(k8sCore client.KubernetesCoreInterface, podToPatch *corev1.Pod, namespaceToWatch string, id int64) error {
+	ctx := context.Background()
 	labels := podToPatch.ObjectMeta.Labels
 	labels[CacheIDLabelKey] = strconv.FormatInt(id, 10)
 	log.Println(id)
@@ -115,7 +117,7 @@ func patchCacheID(k8sCore client.KubernetesCoreInterface, podToPatch *corev1.Pod
 	if err != nil {
 		return fmt.Errorf("Unable to patch cache_id to pod: %s", podToPatch.ObjectMeta.Name)
 	}
-	_, err = k8sCore.PodClient(namespaceToWatch).Patch(podToPatch.ObjectMeta.Name, types.JSONPatchType, patchBytes)
+	_, err = k8sCore.PodClient(namespaceToWatch).Patch(ctx, podToPatch.ObjectMeta.Name, types.JSONPatchType, patchBytes, metav1.PatchOptions{})
 	if err != nil {
 		return err
 	}

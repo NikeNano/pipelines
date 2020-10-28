@@ -15,6 +15,7 @@
 package resource
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -153,6 +154,7 @@ func (r *ResourceManager) ArchiveExperiment(experimentId string) error {
 	// (2.1) archive experiemnts
 	// (2.2) archive runs
 	// (2.3) disable jobs
+	ctx := context.Background()
 	opts, err := list.NewOptions(&model.Job{}, 50, "name", nil)
 	if err != nil {
 		return util.NewInternalServerError(err,
@@ -167,6 +169,7 @@ func (r *ResourceManager) ArchiveExperiment(experimentId string) error {
 		}
 		for _, job := range jobs {
 			_, err = r.getScheduledWorkflowClient(job.Namespace).Patch(
+				ctx,
 				job.Name,
 				types.MergePatchType,
 				[]byte(fmt.Sprintf(`{"spec":{"enabled":%s}}`, strconv.FormatBool(false))))
@@ -235,7 +238,7 @@ func (r *ResourceManager) DeletePipeline(pipelineId string) error {
 }
 
 func (r *ResourceManager) UpdatePipelineDefaultVersion(pipelineId string, versionId string) error {
-    return r.pipelineStore.UpdatePipelineDefaultVersion(pipelineId, versionId)
+	return r.pipelineStore.UpdatePipelineDefaultVersion(pipelineId, versionId)
 }
 
 func (r *ResourceManager) CreatePipeline(name string, description string, pipelineFile []byte) (*model.Pipeline, error) {
@@ -526,8 +529,8 @@ func (r *ResourceManager) RetryRun(runId string) error {
 	if err != nil {
 		return util.Wrap(err, "Retry run failed.")
 	}
-
-	if err = deletePods(r.k8sCoreClient, podsToDelete, namespace); err != nil {
+	ctx := context.Background()
+	if err = deletePods(ctx, r.k8sCoreClient, podsToDelete, namespace); err != nil {
 		return util.NewInternalServerError(err, "Retry run failed. Failed to clean up the failed pods from previous run.")
 	}
 
@@ -572,6 +575,7 @@ func (r *ResourceManager) CreateJob(apiJob *api.Job) (*model.Job, error) {
 	// (1) raw pipeline manifest in pipeline_spec
 	// (2) pipeline version in resource_references
 	// And the latter takes priority over the former
+	ctx := context.Background()
 	var workflowSpecManifestBytes []byte
 	err := ConvertPipelineIdToDefaultPipelineVersion(apiJob.PipelineSpec, &apiJob.ResourceReferences, r)
 	if err != nil {
@@ -650,7 +654,7 @@ func (r *ResourceManager) CreateJob(apiJob *api.Job) (*model.Job, error) {
 		return nil, err
 	}
 
-	newScheduledWorkflow, err := r.getScheduledWorkflowClient(namespace).Create(scheduledWorkflow)
+	newScheduledWorkflow, err := r.getScheduledWorkflowClient(namespace).Create(ctx, scheduledWorkflow)
 	if err != nil {
 		return nil, util.NewInternalServerError(err, "Failed to create a scheduled workflow for (%s)", scheduledWorkflow.Name)
 	}
@@ -667,12 +671,14 @@ func (r *ResourceManager) CreateJob(apiJob *api.Job) (*model.Job, error) {
 }
 
 func (r *ResourceManager) EnableJob(jobID string, enabled bool) error {
+	ctx := context.Background()
 	job, err := r.checkJobExist(jobID)
 	if err != nil {
 		return util.Wrap(err, "Enable/Disable job failed")
 	}
 
 	_, err = r.getScheduledWorkflowClient(job.Namespace).Patch(
+		ctx,
 		job.Name,
 		types.MergePatchType,
 		[]byte(fmt.Sprintf(`{"spec":{"enabled":%s}}`, strconv.FormatBool(enabled))))
@@ -692,12 +698,13 @@ func (r *ResourceManager) EnableJob(jobID string, enabled bool) error {
 }
 
 func (r *ResourceManager) DeleteJob(jobID string) error {
+	ctx := context.Context()
 	job, err := r.checkJobExist(jobID)
 	if err != nil {
 		return util.Wrap(err, "Delete job failed")
 	}
 
-	err = r.getScheduledWorkflowClient(job.Namespace).Delete(job.Name, &v1.DeleteOptions{})
+	err = r.getScheduledWorkflowClient(job.Namespace).Delete(ctx, job.Name, &v1.DeleteOptions{})
 	if err != nil {
 		return util.NewInternalServerError(err, "Delete job CRD failed.")
 	}
@@ -848,12 +855,13 @@ func (r *ResourceManager) ReportScheduledWorkflowResource(swf *util.ScheduledWor
 // retrieve the job metadata from the database, then retrieve the CRD
 // using the job name, and compare the given job id is same as the CRD.
 func (r *ResourceManager) checkJobExist(jobID string) (*model.Job, error) {
+	ctx := context.Context()
 	job, err := r.jobStore.GetJob(jobID)
 	if err != nil {
 		return nil, util.Wrap(err, "Check job exist failed")
 	}
 
-	scheduledWorkflow, err := r.getScheduledWorkflowClient(job.Namespace).Get(job.Name, v1.GetOptions{})
+	scheduledWorkflow, err := r.getScheduledWorkflowClient(job.Namespace).Get(ctx, job.Name, v1.GetOptions{})
 	if err != nil {
 		return nil, util.NewInternalServerError(err, "Check job exist failed")
 	}

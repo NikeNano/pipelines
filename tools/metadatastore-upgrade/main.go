@@ -15,6 +15,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -45,23 +46,23 @@ const (
 	maxWaitTime          = 30
 )
 
-func updateDeployment(deploymentsClient v1.DeploymentInterface, image string, containerArgs []string) error {
+func updateDeployment(ctx context.Context, deploymentsClient v1.DeploymentInterface, image string, containerArgs []string) error {
 	return retry.RetryOnConflict(retry.DefaultRetry, func() error {
 		var err error
 		// Retrieve the latest version of Deployment before attempting update
 		// RetryOnConflict uses exponential backoff to avoid exhausting the apiserver
-		result, err := deploymentsClient.Get(mlMetadataDeployment, metav1.GetOptions{})
+		result, err := deploymentsClient.Get(ctx, mlMetadataDeployment, metav1.GetOptions{})
 		if err != nil {
 			return fmt.Errorf("failed to get latest version of the deployment: %v", err)
 		}
 
 		result.Spec.Template.Spec.Containers[0].Image = image
 		result.Spec.Template.Spec.Containers[0].Args = containerArgs
-		if _, err := deploymentsClient.Update(result); err != nil {
+		if _, err := deploymentsClient.Update(ctx, result, metav1.UpdateOptions{}); err != nil {
 			return err
 		}
 
-		result, err = deploymentsClient.Get(mlMetadataDeployment, metav1.GetOptions{})
+		result, err = deploymentsClient.Get(ctx, mlMetadataDeployment, metav1.GetOptions{})
 		if err != nil {
 			return fmt.Errorf("failed to get latest version of deployment after update: %v", err)
 		}
@@ -113,8 +114,8 @@ func main() {
 	}
 
 	deploymentsClient := clientset.AppsV1().Deployments(*deploymentNamespace)
-
-	originalDeployment, err := deploymentsClient.Get(mlMetadataDeployment, metav1.GetOptions{})
+	ctx := context.Background()
+	originalDeployment, err := deploymentsClient.Get(ctx, mlMetadataDeployment, metav1.GetOptions{})
 	if err != nil {
 		log.Fatalf("Failed to get old Deployment: %v", err)
 	}
@@ -124,15 +125,15 @@ func main() {
 
 	newImage := mlMetadataImage + ":" + *imageTag
 	log.Printf("Upgrading MetadataStore in Namespace: %s from Image: %s to Image: %s", *deploymentNamespace, originalImage, newImage)
-	if err := updateDeployment(deploymentsClient, newImage, append(originalContainerArgs, upgradeFlag)); err == nil {
+	if err := updateDeployment(ctx, deploymentsClient, newImage, append(originalContainerArgs, upgradeFlag)); err == nil {
 		log.Printf("MetadataStore successfully upgraded to Image: %s", newImage)
 		log.Printf("Cleaning up Upgrade")
 		// In a highly unlikely scenario upgrade cleanup can fail.
-		if err := updateDeployment(deploymentsClient, newImage, originalContainerArgs); err != nil {
+		if err := updateDeployment(ctx, deploymentsClient, newImage, originalContainerArgs); err != nil {
 			log.Printf("Upgrade cleanup failed: %v. \nLikely MetadataStore is in a functioning state but needs verifcation.", err)
 		}
 	} else {
-			log.Fatalf("Upgrade attempt failed. MetadataStore deployment in the cluster needs attention.", err)
+		log.Fatalf("Upgrade attempt failed. MetadataStore deployment in the cluster needs attention.", err)
 	}
 	log.Printf("Upgrade complete")
 }
