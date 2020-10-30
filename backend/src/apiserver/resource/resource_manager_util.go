@@ -15,7 +15,6 @@
 package resource
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"regexp"
@@ -167,7 +166,7 @@ func formulateRetryWorkflow(wf *util.Workflow) (*util.Workflow, []string, error)
 			// Do not allow retry of workflows with pods in Running/Pending phase
 			return nil, nil, util.NewInternalServerError(
 				errors.New("workflow cannot be retried"),
-				"Workflow cannot be retried with node %s in %s phase", node.ID, node.Phase)
+				"Workflow cannot be retried with node %s in %s phase", node, node.Phase)
 		}
 		if node.Type == wfv1.NodeTypePod {
 			podsToDelete = append(podsToDelete, node.ID)
@@ -176,9 +175,9 @@ func formulateRetryWorkflow(wf *util.Workflow) (*util.Workflow, []string, error)
 	return util.NewWorkflow(newWF), podsToDelete, nil
 }
 
-func deletePods(ctx context.Context, k8sCoreClient client.KubernetesCoreInterface, podsToDelete []string, namespace string) error {
+func deletePods(k8sCoreClient client.KubernetesCoreInterface, podsToDelete []string, namespace string) error {
 	for _, podId := range podsToDelete {
-		err := k8sCoreClient.PodClient(namespace).Delete(ctx, podId, metav1.DeleteOptions{})
+		err := k8sCoreClient.PodClient(namespace).Delete(podId, &metav1.DeleteOptions{})
 		if err != nil && !apierr.IsNotFound(err) {
 			return util.NewInternalServerError(err, "Failed to delete pods.")
 		}

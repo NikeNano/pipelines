@@ -15,7 +15,6 @@
 package client
 
 import (
-	"context"
 	"errors"
 
 	"github.com/golang/glog"
@@ -35,7 +34,7 @@ func NewScheduledWorkflowClientFake() *FakeScheduledWorkflowClient {
 	}
 }
 
-func (c *FakeScheduledWorkflowClient) Create(ctx context.Context, scheduledWorkflow *v1beta1.ScheduledWorkflow) (*v1beta1.ScheduledWorkflow, error) {
+func (c *FakeScheduledWorkflowClient) Create(scheduledWorkflow *v1beta1.ScheduledWorkflow) (*v1beta1.ScheduledWorkflow, error) {
 	scheduledWorkflow.UID = "123e4567-e89b-12d3-a456-426655440000"
 	scheduledWorkflow.Namespace = "ns1"
 	scheduledWorkflow.Name = scheduledWorkflow.GenerateName
@@ -43,16 +42,16 @@ func (c *FakeScheduledWorkflowClient) Create(ctx context.Context, scheduledWorkf
 	return scheduledWorkflow, nil
 }
 
-func (c *FakeScheduledWorkflowClient) Delete(ctx context.Context, name string, options *v1.DeleteOptions) error {
+func (c *FakeScheduledWorkflowClient) Delete(name string, options *v1.DeleteOptions) error {
 	delete(c.scheduledWorkflows, name)
 	return nil
 }
 
-func (c *FakeScheduledWorkflowClient) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, subresources ...string) (result *v1beta1.ScheduledWorkflow, err error) {
+func (c *FakeScheduledWorkflowClient) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1beta1.ScheduledWorkflow, err error) {
 	return nil, nil
 }
 
-func (c *FakeScheduledWorkflowClient) Get(ctx context.Context, name string, options v1.GetOptions) (*v1beta1.ScheduledWorkflow, error) {
+func (c *FakeScheduledWorkflowClient) Get(name string, options v1.GetOptions) (*v1beta1.ScheduledWorkflow, error) {
 	scheduledWorkflow, ok := c.scheduledWorkflows[name]
 	if ok {
 		return scheduledWorkflow, nil
@@ -60,22 +59,22 @@ func (c *FakeScheduledWorkflowClient) Get(ctx context.Context, name string, opti
 	return nil, errors.New("not found")
 }
 
-func (c *FakeScheduledWorkflowClient) Update(context.Context, *v1beta1.ScheduledWorkflow) (*v1beta1.ScheduledWorkflow, error) {
+func (c *FakeScheduledWorkflowClient) Update(*v1beta1.ScheduledWorkflow) (*v1beta1.ScheduledWorkflow, error) {
 	glog.Error("This fake method is not yet implemented.")
 	return nil, nil
 }
 
-func (c *FakeScheduledWorkflowClient) DeleteCollection(ctx context.Context, options *v1.DeleteOptions, listOptions v1.ListOptions) error {
+func (c *FakeScheduledWorkflowClient) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
 	glog.Error("This fake method is not yet implemented.")
 	return nil
 }
 
-func (c *FakeScheduledWorkflowClient) List(ctx context.Context, opts v1.ListOptions) (*v1beta1.ScheduledWorkflowList, error) {
+func (c *FakeScheduledWorkflowClient) List(opts v1.ListOptions) (*v1beta1.ScheduledWorkflowList, error) {
 	glog.Error("This fake method is not yet implemented.")
 	return nil, nil
 }
 
-func (c *FakeScheduledWorkflowClient) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+func (c *FakeScheduledWorkflowClient) Watch(opts v1.ListOptions) (watch.Interface, error) {
 	glog.Error("This fake method is not yet implemented.")
 	return nil, nil
 }
@@ -84,14 +83,14 @@ type FakeBadScheduledWorkflowClient struct {
 	FakeScheduledWorkflowClient
 }
 
-func (FakeBadScheduledWorkflowClient) Create(ctx context.Context, workflow *v1beta1.ScheduledWorkflow) (*v1beta1.ScheduledWorkflow, error) {
+func (FakeBadScheduledWorkflowClient) Create(workflow *v1beta1.ScheduledWorkflow) (*v1beta1.ScheduledWorkflow, error) {
 	return nil, errors.New("some error")
 }
 
-func (FakeBadScheduledWorkflowClient) Get(ctx context.Context, name string, options v1.GetOptions) (*v1beta1.ScheduledWorkflow, error) {
+func (FakeBadScheduledWorkflowClient) Get(name string, options v1.GetOptions) (*v1beta1.ScheduledWorkflow, error) {
 	return nil, errors.New("some error")
 }
 
-func (FakeBadScheduledWorkflowClient) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, subresources ...string) (result *v1beta1.ScheduledWorkflow, err error) {
+func (FakeBadScheduledWorkflowClient) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1beta1.ScheduledWorkflow, err error) {
 	return nil, errors.New("some error")
 }
