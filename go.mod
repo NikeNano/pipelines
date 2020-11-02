@@ -61,12 +61,4 @@ require (
 	sigs.k8s.io/controller-runtime v0.5.9
 )
 
-replace (
-	k8s.io/api => k8s.io/api v0.17.8
-	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.17.8
-	k8s.io/apimachinery => k8s.io/apimachinery v0.17.8
-	k8s.io/client-go => k8s.io/client-go v0.17.8
-	k8s.io/code-generator => k8s.io/code-generator v0.17.8
-)
-
 go 1.13
