@@ -53,10 +53,10 @@ require (
 	google.golang.org/grpc v1.29.1
 	gopkg.in/ini.v1 v1.57.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0
-	k8s.io/api v0.17.8
-	k8s.io/apimachinery v0.17.8
-	k8s.io/client-go v0.17.8
-	k8s.io/code-generator v0.18.2
+	k8s.io/api v0.17.9
+	k8s.io/apimachinery v0.17.9
+	k8s.io/client-go v0.17.9
+	k8s.io/code-generator v0.17.9
 	k8s.io/kubernetes v1.11.1
 	sigs.k8s.io/controller-runtime v0.5.9
 )

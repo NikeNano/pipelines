@@ -1049,6 +1049,8 @@ k8s.io/api v0.0.0-20191004120003-3a12735a829a/go.mod h1:ceHJE/vDjU8jKnRV6Vqn/+vy
 k8s.io/api v0.0.0-20191219150132-17cfeff5d095/go.mod h1:VTIBWh+oVNX3+w6a85XIJE6jGsm0GCZKZmRQ6cdjfyA=
 k8s.io/api v0.17.8 h1:8JHlbqJ3A6sGhoacXfu/sASSD+HWWqVq67qt9lyB0kU=
 k8s.io/api v0.17.8/go.mod h1:N++Llhs8kCixMUoCaXXAyMMPbo8dDVnh+IQ36xZV2/0=
+k8s.io/api v0.17.9 h1:BA/U8qtSNzx7BbmQy3lODbCxVMKGNUpBJ2fjsKt6OOY=
+k8s.io/api v0.17.9/go.mod h1:avJJAA1fSV6tnbCGW2K+S+ilDFW7WpNr5BScoiZ1M1U=
 k8s.io/apiextensions-apiserver v0.17.8 h1:/E4h3wlnhdanffd/WzVJYd86I0fj76+4OPoHooAyHDI=
 k8s.io/apiextensions-apiserver v0.17.8/go.mod h1:5H/i0XiKizIE9SkoAQaU/ou31JJBIffbsT0ALA18GmE=
 k8s.io/apimachinery v0.0.0-20191004115701-31ade1b30762/go.mod h1:Xc10RHc1U+F/e9GCloJ8QAeCGevSVP5xhOhqlE+e1kM=
@@ -1056,12 +1058,17 @@ k8s.io/apimachinery v0.0.0-20191219145857-f69eda767ee8/go.mod h1:mhhO3hoLkWO+2eC
 k8s.io/apimachinery v0.16.7-beta.0/go.mod h1:mhhO3hoLkWO+2eCvqjPtH2Ly92l9nJDwsswzWKpkN2w=
 k8s.io/apimachinery v0.17.8 h1:zXvd8rYMAjRJXpILP9tdAiUnFIENM9EmHuE81apIoms=
 k8s.io/apimachinery v0.17.8/go.mod h1:Lg8zZ5iC/O8UjCqW6DNhcQG2m4TdjF9kwG3891OWbbA=
+k8s.io/apimachinery v0.17.9 h1:knQxNgMu57Oxlm12J6DS375kmGMeuWV0VNzRRUBB2Yk=
+k8s.io/apimachinery v0.17.9/go.mod h1:Lg8zZ5iC/O8UjCqW6DNhcQG2m4TdjF9kwG3891OWbbA=
 k8s.io/apiserver v0.17.8/go.mod h1:XU2YBi1I/v/P1R5lb0lEwSQ1rnXE01k7yxVtdIWH4Lo=
 k8s.io/client-go v0.0.0-20191225075139-73fd2ddc9180/go.mod h1:ksVkYlACXo9hR9AV+cYyCkuWL1xnWcGtAFxsfqMcozg=
 k8s.io/client-go v0.17.8 h1:cuZSfjqVrNjoZ3wViQHljFPyWMOcgxUjjmQs5Rifbxk=
 k8s.io/client-go v0.17.8/go.mod h1:SJsDS64AAtt9VZyeaQMb4Ck5etCitZ/FwajWdzua5eY=
+k8s.io/client-go v0.17.9 h1:qUPhohX4bUBx0L7pfye02aPnu3PQ0t+B8dqHfGvt++k=
+k8s.io/client-go v0.17.9/go.mod h1:3cM92qAd1XknA5IRkRfpJhl9OQjkYy97ZEUio70wVnI=
 k8s.io/code-generator v0.17.8 h1:YeIU/HBkehbhMOvCdKtlYj9a8e9BRMTFfYEBkKQgC78=
 k8s.io/code-generator v0.17.8/go.mod h1:iiHz51+oTx+Z9D0vB3CH3O4HDDPWrvZyUgUYaIE9h9M=
+k8s.io/code-generator v0.17.9/go.mod h1:iiHz51+oTx+Z9D0vB3CH3O4HDDPWrvZyUgUYaIE9h9M=
 k8s.io/code-generator v0.18.2/go.mod h1:+UHX5rSbxmR8kzS+FAv7um6dtYrZokQvjHpDSYRVkTc=
 k8s.io/component-base v0.17.8/go.mod h1:xfNNdTAMsYzdiAa8vXnqDhRVSEgkfza0iMt0FrZDY7s=
 k8s.io/gengo v0.0.0-20190128074634-0689ccc1d7d6/go.mod h1:ezvh/TsK7cY6rbqRK0oQQ8IAqLxYwwyPxAX1Pzy0ii0=
