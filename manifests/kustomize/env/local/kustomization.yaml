@@ -12,7 +12,7 @@ images:
   newName: nikenano/persistenceagent-server
   newTag: "latest"
 - name: gcr.io/ml-pipeline/scheduledworkflow
-  newName: nikenano/scheduledworkflow-server
+  newName: nikenano/scheduledworkflow
   newTag: "latest"
 - name: gcr.io/ml-pipeline/frontend
   newName: nikenano/frontend-server
